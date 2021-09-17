@@ -2,7 +2,11 @@
 
 from peewee import CharField, DecimalField, ForeignKeyField, IntegerField
 
+from comcatlib import User
+from filedb import File
 from peeweeplus import JSONModel, MySQLDatabase
+
+from marketplace.config import CONFIG
 
 
 DATABASE = MySQLDatabase.from_config(CONFIG)
@@ -11,7 +15,7 @@ DATABASE = MySQLDatabase.from_config(CONFIG)
 class MarketplaceModel(JSONModel):
     """Base model for the marketplace."""
 
-    class Meta:
+    class Meta:     # pylint: disable=C0115,R0903
         database = DATABASE
         schema = database.database
 
