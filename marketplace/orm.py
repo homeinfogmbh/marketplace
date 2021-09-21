@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from peewee import CharField, ForeignKeyField, IntegerField
+from peewee import CharField, ForeignKeyField, IntegerField, ModelSelect
 
 from comcatlib import User
 from filedb import File
+from mdb import Company, Customer, Tenement
 from peeweeplus import JSONModel, MySQLDatabase, SmallUnsignedIntegerField
 
 from marketplace.config import CONFIG, MAX_PRICE, MIN_PRICE
@@ -32,6 +33,16 @@ class Offer(MarketplaceModel):
     price = SmallUnsignedIntegerField()     # in EUR
     email = CharField(32, null=True)
     phone = CharField(32, null=True)
+
+    @classmethod
+    def select(cls, *args, cascade: bool = False, **kwargs) -> ModelSelect:
+        """Selects offers."""
+        if not cascade:
+            return super().select(*args, **kwargs)
+
+        args = {cls, *args, User, Tenement, Customer, Company}
+        return super().select(*args, **kwargs).join(User).join(Tenement).join(
+            Customer).join(Company)
 
     @classmethod
     def from_json(cls, json: dict) -> Offer:
