@@ -1,10 +1,10 @@
 """Object-relational mappings."""
 
-from peewee import CharField, DecimalField, ForeignKeyField, IntegerField
+from peewee import CharField, ForeignKeyField, IntegerField
 
 from comcatlib import User
 from filedb import File
-from peeweeplus import JSONModel, MySQLDatabase
+from peeweeplus import JSONModel, MySQLDatabase, SmallUnsignedIntegerField
 
 from marketplace.config import CONFIG
 
@@ -26,7 +26,7 @@ class Offer(MarketplaceModel):
     user = ForeignKeyField(User, column_name='user')
     title = CharField(30)
     description = CharField(640)
-    price = DecimalField(8, 2)  # in EUR
+    price = SmallUnsignedIntegerField()     # in EUR
     email = CharField(32, null=True)
     phone = CharField(32, null=True)
 
