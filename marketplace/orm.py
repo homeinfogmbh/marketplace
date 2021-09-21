@@ -40,7 +40,7 @@ class Offer(MarketplaceModel):
         if not cascade:
             return super().select(*args, **kwargs)
 
-        args = {cls, *args, User, Tenement, Customer, Company}
+        args = {cls, User, Tenement, Customer, Company, *args}
         return super().select(*args, **kwargs).join(User).join(Tenement).join(
             Customer).join(Company)
 
