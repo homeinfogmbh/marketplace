@@ -8,13 +8,11 @@ from comcatlib import User
 from filedb import File
 from peeweeplus import JSONModel, MySQLDatabase, SmallUnsignedIntegerField
 
-from marketplace.config import CONFIG
+from marketplace.config import CONFIG, MAX_PRICE, MIN_PRICE
 from marketplace.exceptions import InvalidPrice
 
 
 DATABASE = MySQLDatabase.from_config(CONFIG)
-MAX_PRICE = 9999
-MIN_PRICE = 0
 
 
 class MarketplaceModel(JSONModel):
