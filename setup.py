@@ -11,18 +11,11 @@ setup(
     },
     setup_requires=['setuptools_scm'],
     install_requires=[
+        'comcatlib',
         'configlib',
-        'emaillib',
-        'flask',
-        'functoolsplus',
-        'his',
-        'hwdb',
         'mdb',
-        'notificationlib',
         'peewee',
-        'peeweeplus',
-        'previewlib',
-        'wsgilib'
+        'peeweeplus'
     ],
     author='HOMEINFO - Digitale Informationssysteme GmbH',
     author_email='<info@homeinfo.de>',
