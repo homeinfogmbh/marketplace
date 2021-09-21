@@ -1,9 +1,12 @@
 """Common functions."""
 
+from typing import Optional
+
 from peewee import ModelSelect
 
 from comcatlib import User
 from filedb import File
+from mdb import Customer, Tenement
 
 from marketplace.config import MAX_IMAGES, MAX_IMAGE_SIZE
 from marketplace.exceptions import ImageTooLarge, MaxImagesReached
@@ -14,22 +17,35 @@ __all__ = [
     'get_offers',
     'get_offer',
     'add_offer',
-    'get_images',
     'get_image',
     'add_image'
 ]
 
 
-def get_offers(user: User) -> ModelSelect:
+def get_offers(*, user: Optional[User] = None,
+               customer: Optional[Customer] = None) -> ModelSelect:
     """Yields the user's offers."""
 
-    return Offer.select().where(Offer.user == user)
+    if user is None and customer is None:
+        raise TypeError('Must specify either user or customer.')
+
+    condition = True
+
+    if user is not None:
+        condition &= Offer.user == user
+
+    if customer is not None:
+        condition &= Tenement.customer == customer
+
+    return Offer.select(cascade=True).where(condition)
 
 
-def get_offer(ident: int, user: User) -> Offer:
+def get_offer(ident: int, *, user: Optional[User] = None,
+              customer: Optional[Customer] = None) -> Offer:
     """Returns the given offer."""
 
-    return get_offers(user).where(Offer.id == ident).get()
+    return get_offers(user=user, customer=customer).where(
+        Offer.id == ident).get()
 
 
 def add_offer(json: dict, user: User) -> Offer:
@@ -41,16 +57,10 @@ def add_offer(json: dict, user: User) -> Offer:
     return offer
 
 
-def get_images(offer: Offer) -> ModelSelect:
-    """Yields the offer's images."""
-
-    return offer.images
-
-
 def get_image(ident: int, offer: Offer) -> Image:
     """Returns the given image."""
 
-    return get_images(offer).where(Image.id == ident).get()
+    return offer.images.where(Image.id == ident).get()
 
 
 def add_image(offer: Offer, image: bytes, *, index: int = 0) -> Image:
