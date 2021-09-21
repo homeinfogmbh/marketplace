@@ -5,6 +5,8 @@ from peewee import ModelSelect
 from comcatlib import User
 from filedb import File
 
+from marketplace.config import MAX_IMAGES
+from marketplace.exceptions import MaxImagesReached
 from marketplace.orm import Offer, Image
 
 
@@ -53,6 +55,9 @@ def get_image(ident: int, offer: Offer) -> Image:
 
 def add_image(offer: Offer, image: bytes, *, index: int = 0) -> Image:
     """Adds an image attachment to an offer."""
+
+    if offer.images.count() > MAX_IMAGES:
+        raise MaxImagesReached(MAX_IMAGES)
 
     image = Image(offer=offer, file=File.from_bytes(image), index=index)
     image.save()
