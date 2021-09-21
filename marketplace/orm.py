@@ -67,3 +67,13 @@ class Image(MarketplaceModel):
         Offer, column_name='offer', backref='images', on_delete='CASCADE')
     file = ForeignKeyField(File, column_name='file')
     index = IntegerField(default=0)
+
+    @classmethod
+    def select(cls, *args, cascade: bool = False, **kwargs) -> ModelSelect:
+        """Selects offers."""
+        if not cascade:
+            return super().select(*args, **kwargs)
+
+        args = {cls, Offer, User, Tenement, Customer, Company, File, *args}
+        return super().select(*args, **kwargs).join(Offer).join(User).join(
+            Tenement).join(Customer).join(Company).join_from(cls, File)
