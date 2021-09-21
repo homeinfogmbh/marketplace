@@ -60,7 +60,9 @@ def add_offer(json: dict, user: User) -> Offer:
 def get_image(ident: int, offer: Offer) -> Image:
     """Returns the given image."""
 
-    return offer.images.where(Image.id == ident).get()
+    return Image.select(cascade=True).where(
+        (Image.id == ident) & (Image.offer == offer)
+    ).get()
 
 
 def add_image(offer: Offer, image: bytes, *, index: int = 0) -> Image:
