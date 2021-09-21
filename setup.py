@@ -13,6 +13,7 @@ setup(
     install_requires=[
         'comcatlib',
         'configlib',
+        'filedb',
         'mdb',
         'peewee',
         'peeweeplus'
