@@ -1,7 +1,16 @@
 """Common exceptions."""
 
 
-__all__ = ['InvalidPrice', 'MaxImagesReached']
+__all__ = ['ImageTooLarge', 'InvalidPrice', 'MaxImagesReached']
+
+
+class ImageTooLarge(Exception):
+    """Indicates that an image is too large."""
+
+    def __init__(self, size: int, max_size: int):
+        super().__init__()
+        self.size = size
+        self.max_size = max_size
 
 
 class InvalidPrice(ValueError):
