@@ -1,5 +1,7 @@
 """Object-relational mappings."""
 
+from __future__ import annotations
+
 from peewee import CharField, ForeignKeyField, IntegerField
 
 from comcatlib import User
@@ -7,9 +9,12 @@ from filedb import File
 from peeweeplus import JSONModel, MySQLDatabase, SmallUnsignedIntegerField
 
 from marketplace.config import CONFIG
+from marketplace.exceptions import InvalidPrice
 
 
 DATABASE = MySQLDatabase.from_config(CONFIG)
+MAX_PRICE = 9999
+MIN_PRICE = 0
 
 
 class MarketplaceModel(JSONModel):
@@ -29,6 +34,14 @@ class Offer(MarketplaceModel):
     price = SmallUnsignedIntegerField()     # in EUR
     email = CharField(32, null=True)
     phone = CharField(32, null=True)
+
+    @classmethod
+    def from_json(cls, json: dict) -> Offer:
+        """Creates an Offer instance from a JSON-ish dict."""
+        if (price := json.get('price')) < MIN_PRICE or price > MAX_PRICE:
+            raise InvalidPrice(price, MIN_PRICE, MAX_PRICE)
+
+        return super().from_json(json)
 
     def save(self, *args, **kwargs) -> int:
         """Saves the record."""

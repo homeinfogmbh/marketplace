@@ -1,5 +1,6 @@
 """Market place library."""
 
+from marketplace.exceptions import InvalidPrice
 from marketplace.functions import get_offers
 from marketplace.functions import get_offer
 from marketplace.functions import add_offer
@@ -10,6 +11,7 @@ from marketplace.orm import Offer, Image
 
 
 __all__ = [
+    'InvalidPrice',
     'get_offers',
     'get_offer',
     'add_offer',
