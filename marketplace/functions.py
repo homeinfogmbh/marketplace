@@ -2,7 +2,7 @@
 
 from typing import Optional, Union
 
-from peewee import ModelSelect
+from peewee import Expression, ModelSelect
 
 from comcatlib import User
 from filedb import File
@@ -17,14 +17,16 @@ __all__ = [
     'get_offers',
     'get_offer',
     'add_offer',
+    'get_images',
     'get_image',
     'add_image'
 ]
 
 
-def get_offers(*, user: Optional[Union[User, int]] = None,
-               customer: Optional[Union[Customer, int]] = None) -> ModelSelect:
-    """Yields the user's offers."""
+def get_condition(*, user: Optional[Union[User, int]] = None,
+                  customer: Optional[Union[Customer, int]] = None
+                  ) -> Expression:
+    """Returns a select expression."""
 
     if user is None and customer is None:
         raise TypeError('Must specify either user or customer.')
@@ -37,7 +39,15 @@ def get_offers(*, user: Optional[Union[User, int]] = None,
     if customer is not None:
         condition &= Tenement.customer == customer
 
-    return Offer.select(cascade=True).where(condition)
+    return condition
+
+
+def get_offers(*, user: Optional[Union[User, int]] = None,
+               customer: Optional[Union[Customer, int]] = None) -> ModelSelect:
+    """Yields the user's offers."""
+
+    return Offer.select(cascade=True).where(
+        get_condition(user=user, customer=customer))
 
 
 def get_offer(ident: int, *, user: Optional[Union[User, int]] = None,
@@ -57,12 +67,20 @@ def add_offer(json: dict, user: User) -> Offer:
     return offer
 
 
-def get_image(ident: int, offer: Union[Offer, int]) -> Image:
+def get_images(*, user: Optional[Union[User, int]] = None,
+               customer: Union[Customer, int]) -> Image:
     """Returns the given image."""
 
     return Image.select(cascade=True).where(
-        (Image.id == ident) & (Image.offer == offer)
-    ).get()
+        get_condition(user=user, customer=customer))
+
+
+def get_image(ident: int, *, user: Optional[Union[User, int]] = None,
+              customer: Optional[Union[Customer, int]] = None) -> Image:
+    """Returns the given image."""
+
+    return get_images(user=user, customer=customer).where(
+        Image.id == ident).get()
 
 
 def add_image(offer: Union[Offer, int], image: bytes, *,
