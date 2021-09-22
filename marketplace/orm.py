@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from peewee import CharField, ForeignKeyField, IntegerField, ModelSelect
+from peewee import JOIN, CharField, ForeignKeyField, IntegerField, ModelSelect
 
 from comcatlib import User
 from filedb import File
@@ -42,7 +42,8 @@ class Offer(MarketplaceModel):
 
         args = {cls, User, Tenement, Customer, Company, *args}
         return super().select(*args, **kwargs).join(User).join(Tenement).join(
-            Customer).join(Company)
+            Customer).join(Company).join_from(
+            cls, Image, on=Image.offer == cls.id, join_type=JOIN.LEFT_OUTER)
 
     @classmethod
     def from_json(cls, json: dict) -> Offer:
