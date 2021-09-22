@@ -17,7 +17,8 @@ class InvalidPrice(ValueError):
     """Indicates an invalid price value."""
 
     def __init__(self, value: int, min_price: int, max_price: int):
-        super().__init__(value)
+        super().__init__()
+        self.value = value
         self.min_price = min_price
         self.max_price = max_price
 
