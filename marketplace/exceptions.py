@@ -1,7 +1,12 @@
 """Common exceptions."""
 
 
-__all__ = ['ImageTooLarge', 'InvalidPrice', 'MaxImagesReached']
+__all__ = [
+    'ImageTooLarge',
+    'InvalidPrice',
+    'MaxImagesReached',
+    'MissingContactInfo'
+]
 
 
 class ImageTooLarge(Exception):
@@ -29,3 +34,7 @@ class MaxImagesReached(Exception):
     def __init__(self, max_images: int):
         super().__init__()
         self.max_images = max_images
+
+
+class MissingContactInfo(Exception):
+    """Indicates missing contact information."""

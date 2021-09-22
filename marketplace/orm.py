@@ -10,7 +10,7 @@ from mdb import Company, Customer, Tenement
 from peeweeplus import JSONModel, MySQLDatabase, SmallUnsignedIntegerField
 
 from marketplace.config import CONFIG, MAX_PRICE, MIN_PRICE
-from marketplace.exceptions import InvalidPrice
+from marketplace.exceptions import InvalidPrice, MissingContactInfo
 
 
 DATABASE = MySQLDatabase.from_config(CONFIG)
@@ -62,7 +62,7 @@ class Offer(MarketplaceModel):
     def save(self, *args, **kwargs) -> int:
         """Saves the record."""
         if not self.email or not self.phone:
-            raise ValueError('Must either specify email or phone number.')
+            raise MissingContactInfo()
 
         return super().save(*args, **kwargs)
 

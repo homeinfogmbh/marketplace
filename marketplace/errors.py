@@ -3,7 +3,10 @@
 from wsgilib import JSONMessage
 
 from marketplace.orm import Offer, Image
-from marketplace.exceptions import ImageTooLarge, InvalidPrice, MaxImagesReached
+from marketplace.exceptions import ImageTooLarge
+from marketplace.exceptions import InvalidPrice
+from marketplace.exceptions import MaxImagesReached
+from marketplace.exceptions import MissingContactInfo
 
 
 __all__ = ['ERRORS']
@@ -18,5 +21,8 @@ ERRORS = {
         max=error.max_price, status=400),
     MaxImagesReached: lambda error: JSONMessage(
         'Maximum amount of images reached.', max=error.max_images, status=400),
+    MissingContactInfo: lambda _: JSONMessage(
+        'Missing contact info.',
+        hint='Must either specify email or phone number.', status=400),
     Offer.DoesNotExist: lambda _: JSONMessage('No such offer.', status=404),
 }
