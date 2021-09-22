@@ -1,6 +1,6 @@
 """Common functions."""
 
-from typing import Optional
+from typing import Optional, Union
 
 from peewee import ModelSelect
 
@@ -22,8 +22,8 @@ __all__ = [
 ]
 
 
-def get_offers(*, user: Optional[User] = None,
-               customer: Optional[Customer] = None) -> ModelSelect:
+def get_offers(*, user: Optional[Union[User, int]] = None,
+               customer: Optional[Union[Customer, int]] = None) -> ModelSelect:
     """Yields the user's offers."""
 
     if user is None and customer is None:
@@ -40,8 +40,8 @@ def get_offers(*, user: Optional[User] = None,
     return Offer.select(cascade=True).where(condition)
 
 
-def get_offer(ident: int, *, user: Optional[User] = None,
-              customer: Optional[Customer] = None) -> Offer:
+def get_offer(ident: int, *, user: Optional[Union[User, int]] = None,
+              customer: Optional[Union[Customer, int]] = None) -> Offer:
     """Returns the given offer."""
 
     return get_offers(user=user, customer=customer).where(
@@ -57,7 +57,7 @@ def add_offer(json: dict, user: User) -> Offer:
     return offer
 
 
-def get_image(ident: int, offer: Offer) -> Image:
+def get_image(ident: int, offer: Union[Offer, int]) -> Image:
     """Returns the given image."""
 
     return Image.select(cascade=True).where(
@@ -65,7 +65,8 @@ def get_image(ident: int, offer: Offer) -> Image:
     ).get()
 
 
-def add_image(offer: Offer, image: bytes, *, index: int = 0) -> Image:
+def add_image(offer: Union[Offer, int], image: bytes, *,
+              index: int = 0) -> Image:
     """Adds an image attachment to an offer."""
 
     if offer.images.count() > MAX_IMAGES:
