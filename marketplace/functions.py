@@ -58,7 +58,7 @@ def get_offer(ident: int, *, user: Optional[Union[User, int]] = None,
         Offer.id == ident).get()
 
 
-def add_offer(json: dict, user: User) -> Offer:
+def add_offer(json: dict, user: Union[User, int]) -> Offer:
     """Adds a new offer."""
 
     offer = Offer.from_json(json)
