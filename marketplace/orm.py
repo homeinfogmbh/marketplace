@@ -52,6 +52,12 @@ class Offer(MarketplaceModel):
 
         return super().from_json(json)
 
+    def to_json(self, *args, **kwargs) -> dict:
+        """Returns a JSON-ish dict."""
+        json = super().to_json(*args, **kwargs)
+        json['images'] = [image.id for image in self.images]
+        return json
+
     def save(self, *args, **kwargs) -> int:
         """Saves the record."""
         if not self.email or not self.phone:
