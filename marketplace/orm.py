@@ -1,8 +1,14 @@
 """Object-relational mappings."""
 
 from __future__ import annotations
+from datetime import datetime
 
-from peewee import JOIN, CharField, ForeignKeyField, IntegerField, ModelSelect
+from peewee import JOIN
+from peewee import CharField
+from peewee import DateTimeField
+from peewee import ForeignKeyField
+from peewee import IntegerField
+from peewee import ModelSelect
 
 from comcatlib import User
 from filedb import File
@@ -14,6 +20,7 @@ from marketplace.exceptions import InvalidPrice, MissingContactInfo
 
 
 DATABASE = MySQLDatabase.from_config(CONFIG)
+USER_FIELDS = {'title', 'description', 'price', 'email', 'phone'}
 
 
 class MarketplaceModel(JSONModel):
@@ -33,6 +40,7 @@ class Offer(MarketplaceModel):
     price = SmallUnsignedIntegerField()     # in EUR
     email = CharField(32, null=True)
     phone = CharField(32, null=True)
+    created = DateTimeField(default=datetime.now)
 
     @classmethod
     def select(cls, *args, cascade: bool = False, **kwargs) -> ModelSelect:
@@ -46,12 +54,12 @@ class Offer(MarketplaceModel):
             cls, Image, on=Image.offer == cls.id, join_type=JOIN.LEFT_OUTER)
 
     @classmethod
-    def from_json(cls, json: dict) -> Offer:
+    def from_json(cls, json: dict, **kwargs) -> Offer:
         """Creates an Offer instance from a JSON-ish dict."""
         if (price := json.get('price')) < MIN_PRICE or price > MAX_PRICE:
             raise InvalidPrice(price, MIN_PRICE, MAX_PRICE)
 
-        return super().from_json(json)
+        return super().from_json(json, only=USER_FIELDS, **kwargs)
 
     def to_json(self, *args, **kwargs) -> dict:
         """Returns a JSON-ish dict."""
