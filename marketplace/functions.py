@@ -83,8 +83,7 @@ def get_image(ident: int, *, user: Optional[Union[User, int]] = None,
         Image.id == ident).get()
 
 
-def add_image(offer: Union[Offer, int], image: bytes, *,
-              index: int = 0) -> Image:
+def add_image(offer: Union[Offer, int], image: bytes, index: int = 0) -> Image:
     """Adds an image attachment to an offer."""
 
     if offer.images.count() > MAX_IMAGES:
