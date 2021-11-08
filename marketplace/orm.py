@@ -69,7 +69,7 @@ class Offer(MarketplaceModel):
 
     def save(self, *args, **kwargs) -> int:
         """Saves the record."""
-        if not self.email or not self.phone:
+        if not self.email and not self.phone:
             raise MissingContactInfo()
 
         return super().save(*args, **kwargs)
