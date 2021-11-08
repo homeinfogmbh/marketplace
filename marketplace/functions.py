@@ -92,6 +92,7 @@ def add_image(offer: Union[Offer, int], image: bytes, index: int = 0) -> Image:
     if (image_size := len(image)) > MAX_IMAGE_SIZE:
         raise ImageTooLarge(image_size, MAX_IMAGE_SIZE)
 
-    image = Image(offer=offer, file=File.from_bytes(image), index=index)
+    file = File.from_bytes(image, save=True)
+    image = Image(offer=offer, file=file, index=index)
     image.save()
     return image
