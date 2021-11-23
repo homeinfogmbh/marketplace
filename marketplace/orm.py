@@ -51,7 +51,8 @@ class Offer(MarketplaceModel):
         args = {cls, User, Tenement, Customer, Company, *args}
         return super().select(*args, **kwargs).join(User).join(Tenement).join(
             Customer).join(Company).join_from(
-            cls, Image, on=Image.offer == cls.id, join_type=JOIN.LEFT_OUTER)
+            cls, Image, on=Image.offer == cls.id,
+            join_type=JOIN.LEFT_OUTER).group_by(cls.id)
 
     @classmethod
     def from_json(cls, json: dict, **kwargs) -> Offer:
