@@ -13,13 +13,13 @@ from peewee import ModelSelect
 from comcatlib import User
 from filedb import File
 from mdb import Company, Customer, Tenement
-from peeweeplus import JSONModel, MySQLDatabase, SmallUnsignedIntegerField
+from peeweeplus import JSONModel, MySQLDatabaseProxy, SmallUnsignedIntegerField
 
-from marketplace.config import CONFIG, MAX_PRICE, MIN_PRICE
+from marketplace.config import CONFIG_FILE, get_max_price, get_min_price
 from marketplace.exceptions import InvalidPrice, MissingContactInfo
 
 
-DATABASE = MySQLDatabase.from_config(CONFIG)
+DATABASE = MySQLDatabaseProxy('marketplace', CONFIG_FILE)
 USER_FIELDS = {'title', 'description', 'price', 'email', 'phone'}
 
 
@@ -57,10 +57,10 @@ class Offer(MarketplaceModel):
     @classmethod
     def from_json(cls, json: dict, **kwargs) -> Offer:
         """Creates an Offer instance from a JSON-ish dict."""
-        if (price := json.get('price')) < MIN_PRICE or price > MAX_PRICE:
-            raise InvalidPrice(price, MIN_PRICE, MAX_PRICE)
+        if get_min_price() <= (price := json.get('price')) <= get_max_price():
+            return super().from_json(json, only=USER_FIELDS, **kwargs)
 
-        return super().from_json(json, only=USER_FIELDS, **kwargs)
+        raise InvalidPrice(price, get_min_price(), get_max_price())
 
     def to_json(self, *args, **kwargs) -> dict:
         """Returns a JSON-ish dict."""

@@ -8,7 +8,7 @@ from comcatlib import User
 from filedb import File
 from mdb import Customer, Tenement
 
-from marketplace.config import MAX_IMAGES, MAX_IMAGE_SIZE
+from marketplace.config import get_max_images, get_max_image_size
 from marketplace.exceptions import ImageTooLarge, MaxImagesReached
 from marketplace.orm import Offer, Image
 
@@ -86,11 +86,11 @@ def get_image(ident: int, *, user: Optional[Union[User, int]] = None,
 def add_image(offer: Union[Offer, int], image: bytes, index: int = 0) -> Image:
     """Adds an image attachment to an offer."""
 
-    if offer.images.count() > MAX_IMAGES:
-        raise MaxImagesReached(MAX_IMAGES)
+    if offer.images.count() > (max_images := get_max_images()):
+        raise MaxImagesReached(max_images)
 
-    if (image_size := len(image)) > MAX_IMAGE_SIZE:
-        raise ImageTooLarge(image_size, MAX_IMAGE_SIZE)
+    if (image_size := len(image)) > (max_image_size := get_max_image_size()):
+        raise ImageTooLarge(image_size, max_image_size)
 
     file = File.from_bytes(image, save=True)
     image = Image(offer=offer, file=file, index=index)
