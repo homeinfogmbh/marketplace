@@ -43,16 +43,16 @@ class Offer(MarketplaceModel):
     created = DateTimeField(default=datetime.now)
 
     @classmethod
-    def select(cls, *args, cascade: bool = False, **kwargs) -> ModelSelect:
+    def select(cls, *args, cascade: bool = False) -> ModelSelect:
         """Selects offers."""
         if not cascade:
-            return super().select(*args, **kwargs)
+            return super().select(*args)
 
-        args = {cls, User, Tenement, Customer, Company, *args}
-        return super().select(*args, **kwargs).join(User).join(Tenement).join(
-            Customer).join(Company).join_from(
-            cls, Image, on=Image.offer == cls.id,
-            join_type=JOIN.LEFT_OUTER).group_by(cls.id)
+        return super().select(
+            cls, User, Tenement, Customer, Company, *args
+        ).join(User).join(Tenement).join(Customer).join(Company).join_from(
+            cls, Image, on=Image.offer == cls.id, join_type=JOIN.LEFT_OUTER
+        ).group_by(cls.id)
 
     @classmethod
     def from_json(cls, json: dict, **kwargs) -> Offer:
@@ -85,11 +85,12 @@ class Image(MarketplaceModel):
     index = IntegerField(default=0)
 
     @classmethod
-    def select(cls, *args, cascade: bool = False, **kwargs) -> ModelSelect:
+    def select(cls, *args, cascade: bool = False) -> ModelSelect:
         """Selects offers."""
         if not cascade:
-            return super().select(*args, **kwargs)
+            return super().select(*args)
 
-        args = {cls, Offer, User, Tenement, Customer, Company, File, *args}
-        return super().select(*args, **kwargs).join(Offer).join(User).join(
-            Tenement).join(Customer).join(Company).join_from(cls, File)
+        return super().select(
+            cls, Offer, User, Tenement, Customer, Company, File, *args
+        ).join(Offer).join(User).join(Tenement).join(Customer).join(
+            Company).join_from(cls, File)
