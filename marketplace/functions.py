@@ -27,7 +27,7 @@ def get_condition(
         *,
         user: Optional[Union[User, int]] = None,
         customer: Optional[Union[Customer, int]] = None
-) -> Union[Expression | bool]:
+) -> Union[Expression, bool]:
     """Returns a select expression."""
 
     if user is None and customer is None:
