@@ -16,7 +16,8 @@ setup(
         'filedb',
         'mdb',
         'peewee',
-        'peeweeplus'
+        'peeweeplus',
+        'wsgilib'
     ],
     author='HOMEINFO - Digitale Informationssysteme GmbH',
     author_email='<info@homeinfo.de>',
