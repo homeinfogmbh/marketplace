@@ -26,7 +26,7 @@ USER_FIELDS = {'title', 'description', 'price', 'email', 'phone'}
 class MarketplaceModel(JSONModel):
     """Base model for the marketplace."""
 
-    class Meta:     # pylint: disable=C0115,R0903
+    class Meta:
         database = DATABASE
         schema = database.database
 
