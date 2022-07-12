@@ -80,7 +80,8 @@ class Image(MarketplaceModel):
     """Image attachment."""
 
     offer = ForeignKeyField(
-        Offer, column_name='offer', backref='images', on_delete='CASCADE')
+        Offer, column_name='offer', backref='images', on_delete='CASCADE'
+    )
     file = ForeignKeyField(File, column_name='file')
     index = IntegerField(default=0)
 
