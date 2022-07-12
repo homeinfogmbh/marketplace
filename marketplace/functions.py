@@ -52,7 +52,8 @@ def get_offers(
     """Yields the user's offers."""
 
     return Offer.select(cascade=True).where(
-        get_condition(user=user, customer=customer))
+        get_condition(user=user, customer=customer)
+    )
 
 
 def get_offer(
@@ -64,7 +65,8 @@ def get_offer(
     """Returns the given offer."""
 
     return get_offers(user=user, customer=customer).where(
-        Offer.id == ident).get()
+        Offer.id == ident
+    ).get()
 
 
 def add_offer(json: dict, user: Union[User, int]) -> Offer:
@@ -84,7 +86,8 @@ def get_images(
     """Returns the given image."""
 
     return Image.select(cascade=True).where(
-        get_condition(user=user, customer=customer))
+        get_condition(user=user, customer=customer)
+    )
 
 
 def get_image(
@@ -96,7 +99,8 @@ def get_image(
     """Returns the given image."""
 
     return get_images(user=user, customer=customer).where(
-        Image.id == ident).get()
+        Image.id == ident
+    ).get()
 
 
 def add_image(offer: Union[Offer, int], image: bytes, index: int = 0) -> Image:
