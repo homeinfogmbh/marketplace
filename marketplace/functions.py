@@ -23,9 +23,11 @@ __all__ = [
 ]
 
 
-def get_condition(*, user: Optional[Union[User, int]] = None,
-                  customer: Optional[Union[Customer, int]] = None
-                  ) -> Expression:
+def get_condition(
+        *,
+        user: Optional[Union[User, int]] = None,
+        customer: Optional[Union[Customer, int]] = None
+) -> Expression:
     """Returns a select expression."""
 
     if user is None and customer is None:
@@ -42,16 +44,23 @@ def get_condition(*, user: Optional[Union[User, int]] = None,
     return condition
 
 
-def get_offers(*, user: Optional[Union[User, int]] = None,
-               customer: Optional[Union[Customer, int]] = None) -> ModelSelect:
+def get_offers(
+        *,
+        user: Optional[Union[User, int]] = None,
+        customer: Optional[Union[Customer, int]] = None
+) -> ModelSelect:
     """Yields the user's offers."""
 
     return Offer.select(cascade=True).where(
         get_condition(user=user, customer=customer))
 
 
-def get_offer(ident: int, *, user: Optional[Union[User, int]] = None,
-              customer: Optional[Union[Customer, int]] = None) -> Offer:
+def get_offer(
+        ident: int,
+        *,
+        user: Optional[Union[User, int]] = None,
+        customer: Optional[Union[Customer, int]] = None
+) -> Offer:
     """Returns the given offer."""
 
     return get_offers(user=user, customer=customer).where(
@@ -67,16 +76,23 @@ def add_offer(json: dict, user: Union[User, int]) -> Offer:
     return offer
 
 
-def get_images(*, user: Optional[Union[User, int]] = None,
-               customer: Union[Customer, int]) -> Image:
+def get_images(
+        *,
+        user: Optional[Union[User, int]] = None,
+        customer: Union[Customer, int]
+) -> Image:
     """Returns the given image."""
 
     return Image.select(cascade=True).where(
         get_condition(user=user, customer=customer))
 
 
-def get_image(ident: int, *, user: Optional[Union[User, int]] = None,
-              customer: Optional[Union[Customer, int]] = None) -> Image:
+def get_image(
+        ident: int,
+        *,
+        user: Optional[Union[User, int]] = None,
+        customer: Optional[Union[Customer, int]] = None
+) -> Image:
     """Returns the given image."""
 
     return get_images(user=user, customer=customer).where(
