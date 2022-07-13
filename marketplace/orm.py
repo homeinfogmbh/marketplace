@@ -23,6 +23,9 @@ DATABASE = MySQLDatabaseProxy('marketplace', CONFIG_FILE)
 USER_FIELDS = {'title', 'description', 'price', 'email', 'phone'}
 
 
+__all__ = ['Offer', 'Image']
+
+
 class MarketplaceModel(JSONModel):
     """Base model for the marketplace."""
 
