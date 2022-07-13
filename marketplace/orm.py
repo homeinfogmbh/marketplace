@@ -19,11 +19,11 @@ from marketplace.config import CONFIG_FILE, get_max_price, get_min_price
 from marketplace.exceptions import InvalidPrice, MissingContactInfo
 
 
+__all__ = ['Offer', 'Image']
+
+
 DATABASE = MySQLDatabaseProxy('marketplace', CONFIG_FILE)
 USER_FIELDS = {'title', 'description', 'price', 'email', 'phone'}
-
-
-__all__ = ['Offer', 'Image']
 
 
 class MarketplaceModel(JSONModel):
