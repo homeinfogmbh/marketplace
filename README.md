@@ -1,2 +1,2 @@
 # marketplace
-Market place library for ComCat
+Market place library for [`comcat`](https://github.com/homeinfogmbh/comcat).
