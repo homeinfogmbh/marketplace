@@ -19,11 +19,11 @@ from marketplace.config import CONFIG_FILE, get_max_price, get_min_price
 from marketplace.exceptions import InvalidPrice, MissingContactInfo
 
 
-__all__ = ['Offer', 'Image']
+__all__ = ["Offer", "Image"]
 
 
-DATABASE = MySQLDatabaseProxy('marketplace', CONFIG_FILE)
-USER_FIELDS = {'title', 'description', 'price', 'email', 'phone'}
+DATABASE = MySQLDatabaseProxy("marketplace", CONFIG_FILE)
+USER_FIELDS = {"title", "description", "price", "email", "phone"}
 
 
 class MarketplaceModel(JSONModel):
@@ -37,10 +37,10 @@ class MarketplaceModel(JSONModel):
 class Offer(MarketplaceModel):
     """An offer."""
 
-    user = ForeignKeyField(User, column_name='user')
+    user = ForeignKeyField(User, column_name="user")
     title = CharField(30)
     description = CharField(640)
-    price = SmallUnsignedIntegerField()     # in EUR
+    price = SmallUnsignedIntegerField()  # in EUR
     email = CharField(32, null=True)
     phone = CharField(32, null=True)
     created = DateTimeField(default=datetime.now)
@@ -51,16 +51,21 @@ class Offer(MarketplaceModel):
         if not cascade:
             return super().select(*args)
 
-        return super().select(
-            cls, User, Tenement, Customer, Company, *args
-        ).join(User).join(Tenement).join(Customer).join(Company).join_from(
-            cls, Image, on=Image.offer == cls.id, join_type=JOIN.LEFT_OUTER
-        ).group_by(cls.id)
+        return (
+            super()
+            .select(cls, User, Tenement, Customer, Company, *args)
+            .join(User)
+            .join(Tenement)
+            .join(Customer)
+            .join(Company)
+            .join_from(cls, Image, on=Image.offer == cls.id, join_type=JOIN.LEFT_OUTER)
+            .group_by(cls.id)
+        )
 
     @classmethod
     def from_json(cls, json: dict, **kwargs) -> Offer:
         """Creates an Offer instance from a JSON-ish dict."""
-        if get_min_price() <= (price := json.get('price')) <= get_max_price():
+        if get_min_price() <= (price := json.get("price")) <= get_max_price():
             return super().from_json(json, only=USER_FIELDS, **kwargs)
 
         raise InvalidPrice(price, get_min_price(), get_max_price())
@@ -68,7 +73,7 @@ class Offer(MarketplaceModel):
     def to_json(self, *args, **kwargs) -> dict:
         """Returns a JSON-ish dict."""
         json = super().to_json(*args, **kwargs)
-        json['images'] = [image.id for image in self.images]
+        json["images"] = [image.id for image in self.images]
         return json
 
     def save(self, *args, **kwargs) -> int:
@@ -83,9 +88,9 @@ class Image(MarketplaceModel):
     """Image attachment."""
 
     offer = ForeignKeyField(
-        Offer, column_name='offer', backref='images', on_delete='CASCADE'
+        Offer, column_name="offer", backref="images", on_delete="CASCADE"
     )
-    file = ForeignKeyField(File, column_name='file')
+    file = ForeignKeyField(File, column_name="file")
     index = IntegerField(default=0)
 
     @classmethod
@@ -94,7 +99,13 @@ class Image(MarketplaceModel):
         if not cascade:
             return super().select(*args)
 
-        return super().select(
-            cls, Offer, User, Tenement, Customer, Company, File, *args
-        ).join(Offer).join(User).join(Tenement).join(Customer).join(
-            Company).join_from(cls, File)
+        return (
+            super()
+            .select(cls, Offer, User, Tenement, Customer, Company, File, *args)
+            .join(Offer)
+            .join(User)
+            .join(Tenement)
+            .join(Customer)
+            .join(Company)
+            .join_from(cls, File)
+        )

@@ -1,12 +1,7 @@
 """Common exceptions."""
 
 
-__all__ = [
-    'ImageTooLarge',
-    'InvalidPrice',
-    'MaxImagesReached',
-    'MissingContactInfo'
-]
+__all__ = ["ImageTooLarge", "InvalidPrice", "MaxImagesReached", "MissingContactInfo"]
 
 
 class ImageTooLarge(Exception):

@@ -11,15 +11,15 @@ from marketplace.orm import Offer, Image
 
 
 __all__ = [
-    'ERRORS',
-    'ImageTooLarge',
-    'InvalidPrice',
-    'MaxImagesReached',
-    'get_offers',
-    'get_offer',
-    'add_offer',
-    'get_image',
-    'add_image',
-    'Offer',
-    'Image'
+    "ERRORS",
+    "ImageTooLarge",
+    "InvalidPrice",
+    "MaxImagesReached",
+    "get_offers",
+    "get_offer",
+    "add_offer",
+    "get_image",
+    "add_image",
+    "Offer",
+    "Image",
 ]
